@@ -1,4 +1,4 @@
-from math import sqrt
+from random import randint
 
 def criaQuadro(dim):
     board = []
@@ -13,7 +13,7 @@ def criaQuadro(dim):
         board.append(newnode)
     return board
 
-def imprimeQuadro (board, dim):
+def imprimeQuadro(board, dim):
     print("---------------- QUADRO ----------------\n")
     for node in board:
         if node["val"] == 0:
@@ -33,23 +33,23 @@ def findBlankNode(board):
     return blanknode
 
 
-def nodeCanMove(board, blank, move):
+def nodeCanMove(blank, move, size):
 
     if move == 8 and blank["x"] > 1:
         return True
 
-    elif move == 6 and blank["y"] < int(sqrt(len(board))):
+    elif move == 6 and blank["y"] < size:
         return True
 
-    elif move == 2 and blank["x"] < int(sqrt(len(board))):
+    elif move == 2 and blank["x"] < size:
         return True
 
     elif move == 4 and blank["y"] > 1:
         return True
 
     else:
-        print("Movimento inválido.")
         return False
+
 
 def moveNode (board, blank, dim, move):
 
@@ -73,6 +73,19 @@ def moveNode (board, blank, dim, move):
         print()
 
     return board
+
+
+def nosDeslocados(board):
+    mispnodes = 0
+
+    for node in board:
+        if node["pos"] != node["val"]:
+            mispnodes = mispnodes + 1
+
+    return mispnodes
+
+
+# Gerando o quadro inicial
 while True:
     try:
         size = int(input('Digite o valor de n para o tabuleiro nxn ser gerado: '))
@@ -86,4 +99,20 @@ while True:
         continue
     else:
         break
+quadro = criaQuadro(size)
 
+# Embaralhando o tabuleiro
+
+nummoves = randint(50,100)
+count = 0
+
+while count <= nummoves:
+    blank = findBlankNode(quadro)
+    moves = [8, 6, 2, 4]
+    op = randint(0,3)
+    choice = moves [op]
+    if nodeCanMove(blank, choice, size):
+        quadro = moveNode(quadro, blank, size, moves[op])
+        count +=1
+
+imprimeQuadro(quadro, size)
