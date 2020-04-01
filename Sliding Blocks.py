@@ -1,6 +1,6 @@
 from random import randint
 
-def criaQuadro(dim):
+def createBoard(dim):
     board = []
     for i in range(dim ** 2):
         x = int(i / dim + 1)
@@ -13,8 +13,8 @@ def criaQuadro(dim):
         board.append(newnode)
     return board
 
-def imprimeQuadro(board, dim):
-    print("---------------- QUADRO ----------------\n")
+def printBoard(board, dim):
+    print("---"*dim, " BOARD ", "---"*dim, "\n")
     for node in board:
         if node["val"] == 0:
             print('[', f'{"":^5}', '] ', end='')
@@ -23,7 +23,7 @@ def imprimeQuadro(board, dim):
         if node["pos"] % dim == 0:
             print()
 
-    print("\n----------------------------------------")
+    print("\n", "----"*2*dim)
 
 
 def findBlankNode(board):
@@ -75,7 +75,7 @@ def moveNode (board, blank, dim, move):
     return board
 
 
-def nosDeslocados(board):
+def misplacedNodes(board):
     mispnodes = 0
 
     for node in board:
@@ -88,18 +88,18 @@ def nosDeslocados(board):
 # Gerando o quadro inicial
 while True:
     try:
-        size = int(input('Digite o valor de n para o tabuleiro nxn ser gerado: '))
+        size = int(input('Enter a value n to create a nxn board: '))
         if size > 0:
             break
         else:
-            print("Erro: A dimensão do tabuleiro não pode ser nula ou negativa.")
+            print("Error: The dimmension must be a positive integer.")
             continue
     except:
-        print("Por favor, um valor válido.")
+        print("Please, enter with a valid value.")
         continue
     else:
         break
-quadro = criaQuadro(size)
+gameboard = createBoard(size)
 
 # Embaralhando o tabuleiro
 
@@ -107,12 +107,30 @@ nummoves = randint(50,100)
 count = 0
 
 while count <= nummoves:
-    blank = findBlankNode(quadro)
+    blank = findBlankNode(gameboard)
     moves = [8, 6, 2, 4]
-    op = randint(0,3)
-    choice = moves [op]
+    op = randint(0, 3)
+    choice = moves[op]
     if nodeCanMove(blank, choice, size):
-        quadro = moveNode(quadro, blank, size, moves[op])
-        count +=1
+        gameboard = moveNode(gameboard, blank, size, choice)
+        count += 1
 
-imprimeQuadro(quadro, size)
+attempts = 0
+while misplacedNodes(gameboard) != 0:
+    print("Attempts: ", attempts)
+    printBoard(gameboard, size)
+    blank = findBlankNode(gameboard)
+    print("Move the blank position.")
+    print("8 - Up | 2 - Down | 6 - Right | 4 - Left")
+    try:
+        choice = int(input("Choose a move to the blank node: "))
+    except:
+        print("\n\n\n\n\n")
+        continue
+    if nodeCanMove(blank, choice, size):
+        gameboard = moveNode(gameboard, blank, size, choice)
+        attempts += 1
+    else:
+        print("\n\n\n\n\n MOVE NOT ALLOWED!!!! ")
+
+print('CONGRATSSS! YOU DID IT.')
